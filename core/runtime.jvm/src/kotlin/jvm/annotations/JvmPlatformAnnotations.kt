@@ -123,3 +123,18 @@ public annotation class JvmSuppressWildcards(val suppress: Boolean = true)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 public annotation class JvmWildcard
+
+/**
+ * Instructs the compiler to assume that any necessary synchronization regarding
+ * multi-threaded access to objects of the annotated class is either taken care of
+ * by the developer (e.g. by using locks) or not necessary (e.g. because the objects
+ * are immutable, the program is not multi-threaded or the objects are never shared
+ * across threads). The only effect in practice is that simple var properties
+ * will be considered for safe casting, suppressing the usual error about potentially
+ * being modified between multiple accesses. Do NOT use this simply for convenience
+ * if thread safety is not in fact ensured, because you WILL get runtime errors.
+ */
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FILE)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+public annotation class AssumeMultiThreadSafe

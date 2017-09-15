@@ -46,3 +46,20 @@ fun DeclarationDescriptor.findStrictfpAnnotation() =
 fun AnnotationDescriptor.argumentValue(parameterName: String): Any? {
     return allValueArguments[Name.identifier(parameterName)].takeUnless { it is ErrorValue }?.value
 }
+
+val ASSUME_MULTI_THREAD_SAFE_FQ_NAME = FqName("kotlin.jvm.AssumeMultiThreadSafe")
+fun DeclarationDescriptor.isInMultiThreadSafeContainer(): Boolean {
+    val ann = ASSUME_MULTI_THREAD_SAFE_FQ_NAME
+    var contDecl = containingDeclaration
+    while (contDecl != null) {
+        if (contDecl.annotations.hasAnnotation(ann))
+            return true
+        contDecl = contDecl.containingDeclaration
+    }
+    return false
+}
+
+val CONST_FQ_NAME = FqName("kotlin.Const")
+fun DeclarationDescriptor.hasConstAnnotation(): Boolean {
+    return annotations.findAnnotation(CONST_FQ_NAME) != null
+}

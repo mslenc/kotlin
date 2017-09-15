@@ -16,8 +16,7 @@
 
 package kotlin
 
-import kotlin.annotation.AnnotationRetention.BINARY
-import kotlin.annotation.AnnotationRetention.SOURCE
+import kotlin.annotation.AnnotationRetention.*
 import kotlin.annotation.AnnotationTarget.*
 
 /**
@@ -145,3 +144,16 @@ public annotation class DslMarker
 @MustBeDocumented
 @SinceKotlin("1.1")
 public annotation class PublishedApi
+
+
+/**
+ * Marks the property as being constant value, meaning that regardless of when and how many
+ * times it is read, the same value will be returned. The effect is that safe casting will 
+ * treat the property as if it was a simple val getter, suppressing the usual errors about 
+ * not being able to assume the value will be the same across multiple calls. Do NOT use 
+ * this to subvert safe casting if the value will not actually be constant, as you WILL 
+ * get runtime errors.
+ */
+@Target(PROPERTY, PROPERTY_GETTER)
+@Retention(RUNTIME)
+public annotation class Const

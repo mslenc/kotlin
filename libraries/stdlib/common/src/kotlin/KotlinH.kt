@@ -80,6 +80,9 @@ internal inline header fun <T> Array<out T>.copyToArrayOfAny(isVarargs: Boolean)
 
 internal header interface Serializable
 
+@Target(PROPERTY, PROPERTY_GETTER, FUNCTION)
+header annotation class Const
+
 // From numbers.kt
 
 header fun Double.isNaN(): Boolean

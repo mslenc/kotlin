@@ -35,5 +35,9 @@ public annotation class Volatile
 @Retention(AnnotationRetention.SOURCE)
 public annotation class Synchronized
 
+@Target(AnnotationTarget.PROPERTY, AnnotationTarget.PROPERTY_GETTER)
+@Retention(AnnotationRetention.SOURCE)
+public annotation class Const
+
 @kotlin.internal.InlineOnly
 public inline fun <R> synchronized(@Suppress("UNUSED_PARAMETER") lock: Any, crossinline block: () -> R): R = block()

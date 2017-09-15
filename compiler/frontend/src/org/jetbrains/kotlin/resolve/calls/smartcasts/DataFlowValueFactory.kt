@@ -30,6 +30,8 @@ import org.jetbrains.kotlin.psi.psiUtil.before
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.BindingContext.*
 import org.jetbrains.kotlin.resolve.DescriptorUtils
+import org.jetbrains.kotlin.resolve.annotations.hasConstAnnotation
+import org.jetbrains.kotlin.resolve.annotations.isInMultiThreadSafeContainer
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 import org.jetbrains.kotlin.resolve.calls.callUtil.isSafeCall
 import org.jetbrains.kotlin.resolve.calls.context.ResolutionContext
@@ -340,15 +342,18 @@ object DataFlowValueFactory {
     }
 
     private fun propertyKind(propertyDescriptor: PropertyDescriptor, usageModule: ModuleDescriptor?): Kind {
-        if (propertyDescriptor.isVar) return MUTABLE_PROPERTY
-        if (propertyDescriptor.isOverridable) return PROPERTY_WITH_GETTER
-        if (!hasDefaultGetter(propertyDescriptor)) return PROPERTY_WITH_GETTER
+        if (propertyDescriptor.hasConstAnnotation())
+            return STABLE_VALUE
+        if (propertyDescriptor.isOverridable || !hasDefaultGetter(propertyDescriptor))
+            return PROPERTY_WITH_GETTER
         if (!invisibleFromOtherModules(propertyDescriptor)) {
             val declarationModule = DescriptorUtils.getContainingModule(propertyDescriptor)
             if (usageModule == null || usageModule != declarationModule) {
                 return ALIEN_PUBLIC_PROPERTY
             }
         }
+        if (propertyDescriptor.isVar && !propertyDescriptor.isInMultiThreadSafeContainer())
+            return MUTABLE_PROPERTY
         return STABLE_VALUE
     }
 

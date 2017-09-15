@@ -9,3 +9,6 @@ header annotation class JvmName(val name: String)
 header annotation class JvmMultifileClass
 
 header annotation class JvmField
+
+@Target(FILE, CLASS)
+header annotation class AssumeMultiThreadSafe
